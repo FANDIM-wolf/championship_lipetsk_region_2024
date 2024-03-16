@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import VK from 'vk-openapi';
 import './App.css'; // Importing styles from App.css
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const VKIdComponent = () => {
   const [userData, setUserData] = useState(null);
+  const [cookies, setCookie] = useCookies(['first_name', 'second_name', 'vkid']);
+  const navigate = useNavigate();
 
-  // Initializing VK SDK
-  VK.init({ apiId: '51877826' });
+  useEffect(() => {
+    VK.init({ apiId: '51877826' });
+  }, []);
 
   const handleGetVKId = () => {
     VK.Auth.getLoginStatus((response) => {
@@ -20,6 +25,14 @@ const VKIdComponent = () => {
         window.handleJSONPResponse = (data) => {
           setUserData(data.response[0]);
           document.body.removeChild(script);
+
+          var days = 7;
+          const expires = new Date(Date.now() + days * 86400000); // Calculate expiration time correctly in milliseconds
+          setCookie('first_name', data.response[0].first_name, { path: '/', expires: expires }); // Correct format for setting cookie
+          setCookie('second_name', data.response[0].last_name, { path: '/', expires: expires }); // Correct format for setting cookie
+          setCookie('vkid', data.response[0].id, { path: '/', expires: expires }); // Correct format for setting cookie
+
+          navigate('/cabinet'); // Redirect to '/cabinet' after successful authentication
         };
       } else {
         VK.Auth.login((loginResponse) => {
@@ -33,6 +46,14 @@ const VKIdComponent = () => {
             window.handleJSONPResponse = (data) => {
               setUserData(data.response[0]);
               document.body.removeChild(script);
+
+              var days = 7;
+              const expires = new Date(Date.now() + days * 86400000); // Calculate expiration time correctly in milliseconds
+              setCookie('first_name', data.response[0].first_name, { path: '/', expires: expires }); // Correct format for setting cookie
+              setCookie('second_name', data.response[0].last_name, { path: '/', expires: expires }); // Correct format for setting cookie
+              setCookie('vkid', data.response[0].id, { path: '/', expires: expires }); // Correct format for setting cookie
+
+              navigate('/cabinet'); // Redirect to '/cabinet' after successful authentication
             };
           }
         });
@@ -56,3 +77,6 @@ const VKIdComponent = () => {
 };
 
 export default VKIdComponent;
+
+
+
