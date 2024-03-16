@@ -1,2 +1,1 @@
-1) client side app must be run on port 80!
-2) server side currently has one method
+service_lectures_control - лишняя папка
