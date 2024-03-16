@@ -3,8 +3,7 @@ import logo from './logo.svg';
 import Header  from './components/Header';
 import FileUploadComponent from './FileUploadComponent';
 import { BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
-import ImageUpload from './image_upload';
-import ImageDisplay from './ImageDisplay';
+
 import VKIdComponent from './vk_login';
 import Cabinet from './Cabinet';
 import EditUserForm from './EditUserForm';
@@ -15,6 +14,8 @@ import CreateHomeworkForm  from './CreateHomeworkForm';
 import HomeworkList from './HomeworkList';
 import HomeworkDetails  from './HomeworkDetails';
 
+
+
 function App() {
   return (
 
@@ -23,8 +24,7 @@ function App() {
     <Header/>
       <Routes>
         
-        <Route path='/image-upload' element={<ImageUpload/>}/>
-        <Route path='/image-get/:id' element={<ImageDisplay/>}/>
+
         <Route path='/' element={<VKIdComponent/>}/>
         <Route path='/cabinet' element={<Cabinet/>}/>
         <Route path='/edit_data' element={<EditUserForm/>}/>
@@ -35,6 +35,7 @@ function App() {
         <Route path='/create_homework' element={<CreateHomeworkForm/>}/>
         <Route path='/homework_list' element={<HomeworkList/>}/>
         <Route path='/homework/:id' element={<HomeworkDetails/>}/>
+        
       </Routes>
     </Router>
   );
