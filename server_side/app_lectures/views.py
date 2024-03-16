@@ -16,6 +16,8 @@ from django.views.decorators.http import require_POST
 from .models import User, Student, Employee , Token , Group , Employee_and_group ,File , Subject_and_group , Subject ,Homework
 import string
 from rest_framework.renderers import JSONRenderer
+from django.http import FileResponse
+from django.conf import settings
 #генерируем уникальный токен из 20 символов
 def generate_token():
     characters = string.ascii_letters + string.digits + "_$"
@@ -70,27 +72,52 @@ def edit_user_data(request):
             employee, created = Employee.objects.get_or_create(name=name, department=department, position=group, institute=institute, client_id=user.id)
             return JsonResponse({'message': 'User and employee role created successfully'})
 
+#Для проверки того что сотрудник вуза ведет занятия у группы
+@csrf_exempt
+@api_view(['POST'])
+def check_group_and_employee(request):
+    group_name = request.data.get('group_name')
+    group = get_object_or_404(Group, name=group_name)
+    employees_in_group = Employee_and_groups.objects.filter(group=group)
+
+    if employees_in_group.exists():
+        return Response({'status': 'ok'}, status=200)
+    else:
+        return Response({'status': 'error'}, status=400)
 
 @csrf_exempt
 @api_view(['POST'])
 def upload_file_and_save(request):
-    if request.method == 'POST' and request.FILES['file']:
+    if request.method == 'POST':
         file = request.FILES['file']
-        file_name = file.name
-        file_path = os.path.join('media', file_name)
+        homework_id = request.data.get('homework_id')  # Extracting homework_id from request data
 
-        # Создаем папку media, если она не существует
-        if not os.path.exists('media'):
-            os.makedirs('media')
+        if homework_id is not None:  # Check if homework_id is not None or 'undefined'
+            file_name = file.name
+            file_path = os.path.join('media', file_name)
 
-        with open(file_path, 'wb') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
+            # Create the 'media' folder if it doesn't exist
+            if not os.path.exists('media'):
+                os.makedirs('media')
 
-        return HttpResponse("Файл успешно загружен и сохранен в папке media.")
+            with open(file_path, 'wb') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+
+            # Get the Homework object based on the homework_id
+            homework = Homework.objects.get(id=homework_id)
+
+            # Create a File object in the database with the associated Homework
+            new_file = File.objects.create(
+                name=file_name,
+                homework_id=homework
+            )
+
+            return HttpResponse("Файл успешно загружен и сохранен в папке media.")
+        else:
+            return HttpResponse("Ошибка: Не удалось получить идентификатор домашнего задания.")
     else:
         return HttpResponse("Ошибка при загрузке файла.")
-
 @csrf_exempt
 @api_view(['POST'])
 def create_group_with_token(request):
@@ -277,21 +304,51 @@ def get_homeworks_by_vkid(request):
 
 
 
-def get_homework_details(request, homework_id):
+@api_view(['POST'])
+def get_homework_details(request):
     try:
+        data = request.data
+        homework_id = data.get("homework_id")
+        if not homework_id:
+            return Response({"error": "Homework ID is required in the request data"}, status=status.HTTP_400_BAD_REQUEST)
+        
         homework = Homework.objects.get(id=homework_id)
-        homework_data = {
+        subject = Subject.objects.get(id=homework.subject_id.id)
+        group = Group.objects.get(id=homework.group_id.id)
+        
+        files = File.objects.filter(homework_id=homework.id)  # Получаем файлы, связанные с заданием
+        
+        file_links = []  # Список для хранения ссылок на файлы
+        for file in files:
+            file_links.append({
+                'name': file.name,
+                
+            })
+        
+        serialized_homework = {
+            'id': homework.id,
             'name': homework.name,
-            'group_id': homework.group_id,
-            'subject_id': homework.subject_id,
             'description': homework.description,
-            'vkID': homework.vkID
+            'subject': subject.name,
+            'group': group.name,
+            'files': file_links  # Добавляем список ссылок на файлы в данные задания
         }
         
-        response = Response(homework_data, status=status.HTTP_200_OK)
-        response.accepted_renderer = JSONRenderer()
-        
-        return response
+        return Response(serialized_homework, status=status.HTTP_200_OK)
     except Homework.DoesNotExist:
         return Response({"error": "Homework not found"}, status=status.HTTP_404_NOT_FOUND)
+@csrf_exempt
+@api_view(['POST'])
+#cкачать документ по имени
+def download_file(request):
+    data = request.data 
+    file_name = data.get("file_name")
+    file_path = os.path.join(settings.MEDIA_ROOT, file_name)
 
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='application/octet-stream')  # Set content type to octet-stream for any file type
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'  # Set the filename dynamically
+            return response
+    else:
+        return HttpResponse("File not found", status=404)

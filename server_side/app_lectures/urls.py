@@ -8,7 +8,9 @@ urlpatterns = [
    path('register_subject/', views.register_subject, name='register_subject'),
    path('create_homework/' , views.create_homework , name='create_homework'),
    path('get_homeworks_by_vkid/', views.get_homeworks_by_vkid, name='get_homeworks_by_vkid'),
-   path('get_homework_details/<int:homework_id>/', views.get_homework_details , name='get_homework_details'),
-   
+   path('get_homework_details/', views.get_homework_details , name='get_homework_details'),
+   path('download_file/',views.download_file, name='dowload_file'),
+   path('check_group_and_employee/',views.check_group_and_employee, name='check_group_and_employee'),
+
     # Add other URL patterns for your app
 ]
