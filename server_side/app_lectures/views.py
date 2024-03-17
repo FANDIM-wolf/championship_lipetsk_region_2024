@@ -246,7 +246,7 @@ def create_homework(request):
 
             # Create Homework object
             homework = Homework.objects.create(
-                name="Homework Name",  # You can set a specific name or use data['name']
+                name="Homework Name",  
                 group_id=group,
                 subject_id=subject,
                 description=description,
