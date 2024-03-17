@@ -85,18 +85,19 @@ def check_group_and_employee(request):
     else:
         return Response({'status': 'error'}, status=400)
 
+#Загрузка файла и его сохранения в папке media
 @csrf_exempt
 @api_view(['POST'])
 def upload_file_and_save(request):
     if request.method == 'POST':
         file = request.FILES['file']
-        homework_id = request.data.get('homework_id')  # Extracting homework_id from request data
+        homework_id = request.data.get('homework_id')  
 
-        if homework_id is not None:  # Check if homework_id is not None or 'undefined'
+        if homework_id is not None:  
             file_name = file.name
             file_path = os.path.join('media', file_name)
 
-            # Create the 'media' folder if it doesn't exist
+            
             if not os.path.exists('media'):
                 os.makedirs('media')
 
@@ -104,10 +105,10 @@ def upload_file_and_save(request):
                 for chunk in file.chunks():
                     destination.write(chunk)
 
-            # Get the Homework object based on the homework_id
+         
             homework = Homework.objects.get(id=homework_id)
 
-            # Create a File object in the database with the associated Homework
+            #Создание объекта File
             new_file = File.objects.create(
                 name=file_name,
                 homework_id=homework
@@ -276,7 +277,7 @@ def get_homeworks_by_vkid(request):
                     'id': homework.id,
                     'name': homework.name,
                     'description': homework.description,
-                
+                    # Добавьте другие поля, которые вам необходимы
                 })
 
             return Response(serialized_homeworks, status=status.HTTP_200_OK)
@@ -345,9 +346,9 @@ def download_file(request):
     file_path = os.path.join(settings.MEDIA_ROOT, file_name)
 
     if os.path.exists(file_path):
-        with open(file_path, 'rb') as f:
-            response = HttpResponse(f.read(), content_type='application/octet-stream')  # Set content type to octet-stream for any file type
-            response['Content-Disposition'] = f'attachment; filename="{file_name}"'  # Set the filename dynamically
+        with open(file_path, 'rb') as f: #Устанавливаем тип octet-stream для любого типа файла 
+            response = HttpResponse(f.read(), content_type='application/octet-stream') 
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'  
             return response
     else:
         return HttpResponse("File not found", status=404)
