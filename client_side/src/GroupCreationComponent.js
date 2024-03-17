@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import './App.css'; // Import the CSS file
 
+//Компонент отрисовывает форму для создания домашнего задания
 const CreateHomeworkForm = () => {
     const [cookies] = useCookies(['vkid']);
     const [group, setGroup] = useState('');
@@ -24,7 +25,7 @@ const CreateHomeworkForm = () => {
 
             if (response.status === 200) {
                 alert('Homework created successfully');
-                // Reset form fields or handle success as needed
+               
             } else {
                 alert('Failed to create homework');
             }
@@ -40,7 +41,7 @@ const CreateHomeworkForm = () => {
             <input type="text" value={group} onChange={(e) => setGroup(e.target.value)} className="inputField" placeholder="Group Name" />
             <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} className="inputField" placeholder="Subject Name" />
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="textareaField" placeholder="Description"></textarea>
-            <button type="submit" className="button">Create Homework</button>
+            <button type="submit" className="button">Создать Задание</button>
         </form>
     );
 };

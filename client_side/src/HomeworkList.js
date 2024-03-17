@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 
+//Компонент отображает список заданий , созданным преподователем
 const HomeworkList = () => {
     const [homeworks, setHomeworks] = useState([]);
     const [cookies] = useCookies(['vkid']);
@@ -32,7 +33,7 @@ const HomeworkList = () => {
             <ul>
                 {homeworks.map(homework => (
                     <li key={homework.id}>
-                        <Link to={`/homework/${homework.id}`}>Homework {homework.id}</Link>
+                        <Link to={`/homework/${homework.id}`}>Задание {homework.id}</Link>
                     </li>
                 ))}
             </ul>

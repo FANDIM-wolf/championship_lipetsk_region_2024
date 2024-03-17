@@ -3,6 +3,7 @@ import axios from 'axios';
 import './App.css';
 import { useCookies } from 'react-cookie';
 
+//Обновление пользовательских данных
 const EditUserForm = () => {
     const [cookies] = useCookies(['first_name', 'second_name', 'vkid']);
     const [email, setEmail] = useState('');

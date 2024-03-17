@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -16,8 +17,8 @@ const HomeworkDetails = () => {
     const handleUpload = () => {
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('homework_id', id); // Ensure homework_id is correctly appended
-         // Используйте homework_id внутри компонента, например:
+        formData.append('homework_id', id);
+        
 
 
         axios.post('http://localhost:8000/api/upload_file_and_save/', formData)
@@ -59,18 +60,18 @@ const HomeworkDetails = () => {
 
 
     if (!homework) {
-        return <div>Loading...</div>;
+        return <div>Загрузка...</div>;
     }
 
     return (
         <div>
-            <h2>Homework Details</h2>
-            <p>ID: {homework.id}</p>
-            <p>Name: {homework.name}</p>
-            <p>Description: {homework.description}</p>
-            <p>Subject: {homework.subject}</p>
-            <p>Group: {homework.group}</p>
-            <p>Files:</p>
+            <h2>Детали задания</h2>
+           
+            <p>Название задания: {homework.name}</p>
+            <p>Описание задания: {homework.description}</p>
+            <p>Предмет: {homework.subject}</p>
+            <p>Группа: {homework.group}</p>
+            <p>Файлы к заданию:</p>
             <ul>
                 {homework.files.map((file, index) => (
                     <li key={index}>

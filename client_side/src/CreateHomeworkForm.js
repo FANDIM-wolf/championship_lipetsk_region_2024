@@ -9,14 +9,14 @@ const FileUploadComponent = () => {
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
     };
-
+    // Функция для загрузки документа 
     const handleUpload = () => {
         const formData = new FormData();
         formData.append('file', selectedFile);
 
         axios.post('http://localhost:8000/api/upload_file_and_save/', formData, {
             headers: {
-                'Cookie': `vkid=${cookies.vkid}`  // Include vkid cookie from react-cookie in the request headers
+                'Cookie': `vkid=${cookies.vkid}`  
             }
         })
         .then(response => {
