@@ -228,15 +228,14 @@ def create_homework(request):
     data = request.data
     vkid = data['vkid']
 
-    # Retrieve user type based on vkid (Assuming User model has a field for user type)
-    # Check if user is an employee
-    # Proceed if user is an employee
+    # Получения данных о сотруднике через вкid
+    
     try:
         employee = Employee.objects.get(vkID=vkid)
         group_name = data['group_name']
         subject_name = data['subject_name']
 
-        # Check correspondence of employee with group and group with subject
+        # Преподователь должен быть связен с группой и предметом 
         if Employee_and_group.objects.filter(employee_id=employee, group_id__name=group_name).exists() and \
            Subject_and_group.objects.filter(group_id__name=group_name, subject_id__name=subject_name).exists():
             
@@ -246,7 +245,7 @@ def create_homework(request):
 
             # Create Homework object
             homework = Homework.objects.create(
-                name="Homework Name",  
+                name= "Задание для группы "+group.name,  
                 group_id=group,
                 subject_id=subject,
                 description=description,
