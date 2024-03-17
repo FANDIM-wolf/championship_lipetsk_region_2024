@@ -13,7 +13,7 @@ import Register_subject_and_group from './Register_subject_and_group';
 import CreateHomeworkForm  from './CreateHomeworkForm';
 import HomeworkList from './HomeworkList';
 import HomeworkDetails  from './HomeworkDetails';
-
+import GetTokenForm from './GetTokenForm ';
 
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
         <Route path='/cabinet' element={<Cabinet/>}/>
         <Route path='/edit_data' element={<EditUserForm/>}/>
         <Route path='/file_upload' element={<FileUploadComponent/>}/>
-        <Route path='/create_group' element={<GroupCreationComponent/>}/>
+        <Route path='/get_token' element={<GetTokenForm/>}/>
         <Route path='/tokens' element={<AvailableTokensComponent/>}/>
         <Route path='/register_subject_and_group' element={<Register_subject_and_group/>}/>
         <Route path='/create_homework' element={<CreateHomeworkForm/>}/>
