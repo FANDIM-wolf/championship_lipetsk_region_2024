@@ -276,7 +276,7 @@ def get_homeworks_by_vkid(request):
                     'id': homework.id,
                     'name': homework.name,
                     'description': homework.description,
-                    # Добавьте другие поля, которые вам необходимы
+                
                 })
 
             return Response(serialized_homeworks, status=status.HTTP_200_OK)
@@ -289,7 +289,7 @@ def get_homeworks_by_vkid(request):
                     'id': homework.id,
                     'name': homework.name,
                     'description': homework.description,
-                    # Добавьте другие поля, которые вам необходимы
+                    
                 })
 
             return Response(serialized_homeworks, status=status.HTTP_200_OK)
